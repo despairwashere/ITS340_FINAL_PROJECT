@@ -1,8 +1,8 @@
 import java.awt.*;
-import java.sql.*;
 import javax.swing.*;
 
 public class LoginFrame extends JFrame {
+
     private JTextField usernameField;
     private JPasswordField passwordField;
 
@@ -11,41 +11,39 @@ public class LoginFrame extends JFrame {
         setSize(300, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        setLayout(new GridLayout(3, 2, 10, 10));
 
-        JPanel panel = new JPanel(new GridLayout(3, 2));
-        panel.add(new JLabel("Username:"));
+        // UI Components
+        add(new JLabel("Username:"));
         usernameField = new JTextField();
-        panel.add(usernameField);
+        add(usernameField);
 
-        panel.add(new JLabel("Password:"));
+        add(new JLabel("Password:"));
         passwordField = new JPasswordField();
-        panel.add(passwordField);
+        add(passwordField);
 
-        JButton loginBtn = new JButton("Login");
-        loginBtn.addActionListener(e -> authenticate());
-        panel.add(loginBtn);
+        JButton loginButton = new JButton("Login");
+        add(loginButton);
 
-        add(panel);
-    }
+        JButton cancelButton = new JButton("Cancel");
+        add(cancelButton);
 
-    private void authenticate() {
-        String user = usernameField.getText();
-        String pass = new String(passwordField.getPassword());
+        // Button Actions
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM login WHERE username=? AND password=?")) {
-            stmt.setString(1, user);
-            stmt.setString(2, pass);
-
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                dispose();
-                new DashboardFrame().setVisible(true);
+            // Placeholder login logic
+            if (!username.isEmpty() && !password.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Login Successful!");
+                // You can redirect to another frame here
             } else {
-                JOptionPane.showMessageDialog(this, "Login failed.");
+                JOptionPane.showMessageDialog(this, "Please enter both fields.");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        });
+
+        cancelButton.addActionListener(e -> {
+            dispose(); // Close the window
+        });
     }
 }
